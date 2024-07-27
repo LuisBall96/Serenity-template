@@ -1,0 +1,90 @@
+buildscript {
+    ext {
+        serenityCoreVersion = '4.1.12'
+        serenityPluginVersion = '4.1.12'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("net.serenity-bdd:serenity-gradle-plugin:$serenityPluginVersion")
+        classpath("net.serenity-bdd:serenity-single-page-report:$serenityPluginVersion")
+    }
+}
+
+plugins {
+    id "net.serenity-bdd.serenity-gradle-plugin" version "4.1.12"
+    id 'java'
+    id 'eclipse'
+    id 'idea'
+}
+
+defaultTasks 'clean','test','aggregate'
+apply plugin: 'net.serenity-bdd.serenity-gradle-plugin'
+version '1.0-SNAPSHOT'
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+ext {
+    slf4jVersion = '1.7.32'
+    serenityCoreVersion = '4.1.12'
+    serenityCucumberVersion = '4.1.12'
+    junitVersion = '5.10.2'
+    assertJVersion = '3.24.2'
+    logbackVersion = '1.2.10'
+    lombokVersion = '1.18.22'
+    log4jVersion = '2.17.1'
+}
+
+dependencies {
+    testImplementation("net.serenity-bdd:serenity-core:${serenityCoreVersion}") {
+        exclude group: 'org.apache.groovy', module: 'groovy'
+    }
+    implementation "net.serenity-bdd:serenity-ensure:${serenityCoreVersion}"
+    implementation "net.serenity-bdd:serenity-junit5:${serenityCoreVersion}"
+    implementation "net.serenity-bdd:serenity-cucumber:${serenityCucumberVersion}"
+    implementation "net.serenity-bdd:serenity-screenplay:${serenityCoreVersion}"
+    implementation "net.serenity-bdd:serenity-screenplay-webdriver:${serenityCoreVersion}"
+    implementation "net.serenity-bdd:serenity-screenplay-rest:${serenityCoreVersion}"
+
+    implementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    implementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+
+    implementation "org.assertj:assertj-core:${assertJVersion}"
+
+    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+}
+
+test {
+    useJUnitPlatform()
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
+    finalizedBy(aggregate)
+}
+
+serenity {
+    testRoot = "co.com.runner"
+    requirementsBaseDir = "src/test/resources/features"
+    reports = ["single-page-html"]
+}
+
+gradle.startParameter.continueOnFailure = true
+
+test.finalizedBy(aggregate)
+
+test {
+    useJUnitPlatform()
+}
