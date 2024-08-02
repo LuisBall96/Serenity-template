@@ -1,7 +1,7 @@
 buildscript {
     ext {
-        serenityCoreVersion = '4.1.12'
-        serenityPluginVersion = '4.1.12'
+        serenityCoreVersion = '3.3.4'
+        serenityPluginVersion = '3.3.4'
     }
     repositories {
         mavenCentral()
@@ -13,7 +13,7 @@ buildscript {
 }
 
 plugins {
-    id "net.serenity-bdd.serenity-gradle-plugin" version "4.1.12"
+    id "net.serenity-bdd.serenity-gradle-plugin" version "3.3.4"  // Versión ajustada a 3.3.4
     id 'java'
     id 'eclipse'
     id 'idea'
@@ -36,18 +36,18 @@ java {
 }
 
 ext {
-    slf4jVersion = '1.7.32'
-    serenityCoreVersion = '4.1.12'
-    serenityCucumberVersion = '4.1.12'
-    junitVersion = '5.10.2'
-    assertJVersion = '3.24.2'
+    slf4jVersion = '1.7.7'
+    serenityCoreVersion = '3.3.4'  // Versión ajustada a 3.3.4
+    serenityCucumberVersion = '3.3.4'  // Versión ajustada a 3.3.4
+    junitVersion = '5.8.2'
+    assertJVersion = '3.22.0'
     logbackVersion = '1.2.10'
     lombokVersion = '1.18.22'
     log4jVersion = '2.17.1'
 }
 
 dependencies {
-    testImplementation("net.serenity-bdd:serenity-core:${serenityCoreVersion}") {
+    testImplementation ("net.serenity-bdd:serenity-core:${serenityCoreVersion}") {
         exclude group: 'org.apache.groovy', module: 'groovy'
     }
     implementation "net.serenity-bdd:serenity-ensure:${serenityCoreVersion}"
@@ -57,15 +57,15 @@ dependencies {
     implementation "net.serenity-bdd:serenity-screenplay-webdriver:${serenityCoreVersion}"
     implementation "net.serenity-bdd:serenity-screenplay-rest:${serenityCoreVersion}"
 
-    implementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     implementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-
+    implementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     implementation "org.assertj:assertj-core:${assertJVersion}"
-
     implementation "ch.qos.logback:logback-classic:${logbackVersion}"
-    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
 
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 
 test {
@@ -76,8 +76,8 @@ test {
 }
 
 serenity {
-    testRoot = "co.com.runner"
-    requirementsBaseDir = "src/test/resources/features"
+    testRoot = "com.co.Runner"
+    requirementsBaseDir = file("src/test/resources/features")
     reports = ["single-page-html"]
 }
 
